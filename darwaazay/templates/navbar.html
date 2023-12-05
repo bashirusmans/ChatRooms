@@ -1,2 +1,7 @@
 <a href="{% url 'home' %}">Home</a>
+
+<form method="get" action="{% url 'home' %}">
+    <input type="text" name="q" placeholder="Search Rooms...">
+</form>
+
 <hr>

@@ -1,6 +1,8 @@
 {% extends 'main.html' %}
 {% block content %}
+    <a href="{% url 'update-room' room.id %}">Edit room </a>
     <h1>{{room.name}}</h1>
     <h2>{{room.description}}</h2>
     <h5>{{room.created}}</h5>
+    <a href="{% url 'delete-room' room.id %}">Delete room </a>
 {% endblock %}
