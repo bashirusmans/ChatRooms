@@ -65,13 +65,42 @@ def home(request):
         rooms = models.Room.objects.all()
     topics = models.Topic.objects.all()
     room_count = rooms.count()
-    context = {'rooms':rooms, 'topics':topics, 'room_count':room_count}
+    if(q):
+        room_messages = models.Message.objects.filter(
+            Q(room__name__icontains=q) |
+            Q(room__topic__name__icontains=q) |
+            Q(room__host__username__icontains=q) |
+            Q(room__description__icontains=q)
+        ).order_by('-created')
+    else:
+        room_messages = models.Message.objects.all().order_by('-created')
+
+    context = {'rooms':rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages}
     return render(request, 'doors/home.html', context)
 
 def room(request, pk):
     room = models.Room.objects.get(id=int(pk))
-    context = {'room':room}
+    room_messages = room.message_set.all().order_by('-created')
+    participants = room.participants.all()
+    if request.method == "POST":
+        message = models.Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
+        room.participants.add(request.user)
+        return redirect('room', pk=room.id)
+
+    context = {'room':room, 'room_messages':room_messages, 'participants':participants}
     return render(request, 'doors/room.html', context)
+
+def userProfile(request, pk):
+    user = models.User.objects.get(id=int(pk))
+    rooms = user.room_set.all()
+    topics = models.Topic.objects.all()
+    room_messages = user.message_set.all().order_by('-created')
+    context = {'user':user, 'rooms':rooms, 'topics':topics, 'room_messages':room_messages}
+    return render(request, 'doors/profile.html', context)
 
 @login_required(login_url="login")
 def createRoom(request):
@@ -110,3 +139,15 @@ def deleteRoom(request,pk):
         return redirect('home')
     context = {'obj': room}
     return render(request, 'doors/delete.html', context)
+
+@login_required(login_url="login")
+def deleteMessage(request,pk):
+    message = models.Message.objects.get(id=int(pk))
+    if request.user != message.user:
+        return HttpResponse("You are not allowed to delete this message")
+    if request.method == 'POST':
+        message.delete()
+        return redirect('home')
+    context = {'obj': message}
+    return render(request, 'doors/delete.html', context)
+
