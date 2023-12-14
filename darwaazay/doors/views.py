@@ -64,7 +64,9 @@ def home(request):
     else:
         rooms = models.Room.objects.all()
     topics = models.Topic.objects.all()
+
     room_count = rooms.count()
+    total_room_count = models.Room.objects.all().count()
     if(q):
         room_messages = models.Message.objects.filter(
             Q(room__name__icontains=q) |
@@ -75,7 +77,7 @@ def home(request):
     else:
         room_messages = models.Message.objects.all().order_by('-created')
 
-    context = {'rooms':rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages}
+    context = {'rooms':rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages, 'total_room_count':total_room_count}
     return render(request, 'doors/home.html', context)
 
 def room(request, pk):
@@ -97,9 +99,10 @@ def room(request, pk):
 def userProfile(request, pk):
     user = models.User.objects.get(id=int(pk))
     rooms = user.room_set.all()
+    total_room_count = models.Room.objects.all().count()
     topics = models.Topic.objects.all()
     room_messages = user.message_set.all().order_by('-created')
-    context = {'user':user, 'rooms':rooms, 'topics':topics, 'room_messages':room_messages}
+    context = {'user':user, 'rooms':rooms, 'topics':topics, 'room_messages':room_messages, 'total_room_count':total_room_count}
     return render(request, 'doors/profile.html', context)
 
 @login_required(login_url="login")
@@ -107,10 +110,13 @@ def createRoom(request):
     if request.method == 'POST':
         form = forms.RoomForm(request.POST)
         if form.is_valid():
-            form.save()
+            room = form.save(commit=False)
+            room.host = request.user
+            room.save()
             return redirect('home')
     form = forms.RoomForm()
-    context = {'form':form}
+    topics = models.Topic.objects.all()
+    context = {'form':form, 'topics':topics}
     return render(request, 'doors/room_form.html', context)
 
 @login_required(login_url="login")
