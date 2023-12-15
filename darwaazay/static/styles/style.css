@@ -567,6 +567,10 @@ a {
 }
 
 .topics__list {
+  list-style: none;
+}
+
+.topics__list__mobile {
   height: 50vh;
   list-style: none;
   overflow-y: scroll;
