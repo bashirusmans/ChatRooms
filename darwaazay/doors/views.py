@@ -52,6 +52,31 @@ def registerUser(request):
     context = {'pagename':pagename, 'form':form}
     return render(request, 'doors/login_register.html', context)
 
+@login_required(login_url="login")
+def updateUser(request):
+    user = request.user
+    if request.method == "POST":
+        if user.username == request.POST.get('username'):
+            message = 'That is already your username'
+            messages.error(request, message)
+            return redirect('update-user')
+        try:
+            named_user = models.User.objects.get(username=request.POST.get('username'))
+            message = 'Username ' + named_user.username + ' is already taken'
+            messages.error(request, message)
+            return redirect('update-user')
+        except:
+            pass
+        form = forms.UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.id)
+        else:
+            messages.error(request, 'An error occured during updation')
+    form = forms.UserForm(instance=user)
+    context = {'form':form}
+    return render(request, 'doors/edit-user.html', context)
+
 def home(request):
     q = request.GET.get('q')
     if(q):
@@ -107,16 +132,25 @@ def userProfile(request, pk):
 
 @login_required(login_url="login")
 def createRoom(request):
-    if request.method == 'POST':
-        form = forms.RoomForm(request.POST)
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.host = request.user
-            room.save()
-            return redirect('home')
     form = forms.RoomForm()
     topics = models.Topic.objects.all()
-    context = {'form':form, 'topics':topics}
+    if request.method == 'POST':
+        # form = forms.RoomForm(request.POST)
+        topic_name = request.POST.get('topic')
+        topic, created = models.Topic.objects.get_or_create(name = topic_name)
+        models.Room.objects.create(
+            host = request.user,
+            topic = topic,
+            name = request.POST.get('name'),
+            description = request.POST.get('description'),
+        )
+        # if form.is_valid():
+        #     room = form.save(commit=False)
+        #     room.host = request.user
+        #     room.save()
+        return redirect('home')
+
+    context = {'form':form, 'topics':topics, 'create':True}
     return render(request, 'doors/room_form.html', context)
 
 @login_required(login_url="login")
@@ -127,12 +161,14 @@ def updateRoom(request, pk):
         return HttpResponse("You are not allowed here")
 
     if request.method == 'POST':
-        form = forms.RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        topic, created = models.Topic.objects.get_or_create(name=topic_name)
+        room.name = request.POST.get('name')
+        room.description = request.POST.get('description')
+        room.topic = topic
+        room.save()
     form = forms.RoomForm(instance=room)
-    context = {'form':form}
+    context = {'form':form, 'room': room}
     return render(request, 'doors/room_form.html', context)
 
 @login_required(login_url="login")
