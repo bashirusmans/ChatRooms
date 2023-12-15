@@ -567,7 +567,9 @@ a {
 }
 
 .topics__list {
+  height: 50vh;
   list-style: none;
+  overflow-y: scroll;
 }
 
 .topics__list li a {
@@ -1146,7 +1148,7 @@ a {
 }
 
 .activities__list {
-  height: 90vh;
+  height: 70vh;
   overflow-y: scroll;
   padding-bottom: 0;
 }

@@ -88,7 +88,7 @@ def home(request):
         )
     else:
         rooms = models.Room.objects.all()
-    topics = models.Topic.objects.all()
+    topics = models.Topic.objects.all()[0:5]
 
     room_count = rooms.count()
     total_room_count = models.Room.objects.all().count()
@@ -192,4 +192,22 @@ def deleteMessage(request,pk):
         return redirect('home')
     context = {'obj': message}
     return render(request, 'doors/delete.html', context)
+
+def topicsPage(request):
+    q = request.GET.get('q')
+    if (q):
+        topics = models.Topic.objects.filter(
+            Q(name__icontains=q)
+        )
+    else:
+        topics = models.Topic.objects.all()
+    total_room_count = models.Room.objects.all().count()
+    context = {'topics':topics, 'total_room_count':total_room_count}
+    return render(request, 'doors/topics.html', context)
+
+def activityPage(request):
+
+    room_messages = models.Message.objects.all()
+    context = {'room_messages':room_messages}
+    return render(request, 'doors/activity.html', context)
 
