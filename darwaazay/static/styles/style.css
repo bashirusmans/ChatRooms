@@ -1145,6 +1145,13 @@ a {
   padding-bottom: 0;
 }
 
+.activities__list {
+  height: 90vh;
+  overflow-y: scroll;
+  padding-bottom: 0;
+}
+
+
 .participant {
   display: flex;
   align-items: center;
