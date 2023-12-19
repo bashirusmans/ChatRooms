@@ -8,7 +8,22 @@ from . import models
 from . import forms
 # Create your views here.
 
+
+
 def loginPage(request):
+
+    '''
+      Handles user authentication for the login page.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponseRedirect or HttpResponse: Redirects to 'home' if the user is authenticated,
+        else renders the login page with appropriate context.
+    
+    '''
+
     pagename = 'login'
 
     if request.user.is_authenticated:
@@ -30,11 +45,41 @@ def loginPage(request):
     context = {'pagename':pagename}
     return render(request, 'doors/login_register.html', context)
 
+
+
 def logoutUser(request):
+
+    '''
+      Logs out the currently authenticated user.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponseRedirect: Redirects to 'home' after logging out.
+    
+    '''
+
     logout(request)
     return redirect('home')
 
+
+
+
 def registerUser(request):
+
+    '''
+      Handles user registration.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponseRedirect or HttpResponse: Redirects to 'home' after successful registration,
+        else renders the registration page with appropriate context.
+    
+    '''
+
     if request.method == "POST":
         form = forms.MyUserCreationForm(request.POST)
         if form.is_valid():
@@ -51,8 +96,24 @@ def registerUser(request):
     context = {'pagename':pagename, 'form':form}
     return render(request, 'doors/login_register.html', context)
 
+
+
+
 @login_required(login_url="login")
 def updateUser(request):
+
+    '''
+        Handles user profile updates.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponseRedirect or HttpResponse: Redirects to the user profile page after successful update,
+        else renders the user update page with appropriate context.
+    
+    '''
+
     user = request.user
     if request.method == "POST":
         if user.username == request.POST.get('username'):
@@ -75,7 +136,22 @@ def updateUser(request):
     context = {'form':form}
     return render(request, 'doors/edit-user.html', context)
 
+
+
+
 def home(request):
+
+    '''
+     Displays the home page with a list of rooms and topics.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: Renders the home page with appropriate context.
+    
+    '''
+
     q = request.GET.get('q')
     if(q):
         rooms = models.Room.objects.filter(
@@ -104,6 +180,19 @@ def home(request):
     return render(request, 'doors/home.html', context)
 
 def room(request, pk):
+
+    '''
+    Displays a specific room with its messages and participants.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        pk (int): The primary key of the room to be displayed.
+
+    Returns:
+        HttpResponse: Renders the room page with appropriate context.
+    
+    '''
+
     room = models.Room.objects.get(id=int(pk))
     room_messages = room.message_set.all().order_by('-created')
     participants = room.participants.all()
@@ -119,7 +208,23 @@ def room(request, pk):
     context = {'room':room, 'room_messages':room_messages, 'participants':participants}
     return render(request, 'doors/room.html', context)
 
+
+
+
 def userProfile(request, pk):
+
+    '''
+    Displays the profile page for a specific user.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        pk (int): The primary key of the user whose profile is to be displayed.
+
+    Returns:
+        HttpResponse: Renders the user profile page with appropriate context.
+
+    '''
+
     user = models.User.objects.get(id=int(pk))
     rooms = user.room_set.all()
     total_room_count = models.Room.objects.all().count()
@@ -128,8 +233,25 @@ def userProfile(request, pk):
     context = {'user':user, 'rooms':rooms, 'topics':topics, 'room_messages':room_messages, 'total_room_count':total_room_count}
     return render(request, 'doors/profile.html', context)
 
+
+
+
+
 @login_required(login_url="login")
 def createRoom(request):
+
+    '''
+    Handles the creation of a new room.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponseRedirect or HttpResponse: Redirects to 'home' after successful room creation,
+        else renders the room creation page with appropriate context.
+    
+    '''
+
     form = forms.RoomForm()
     topics = models.Topic.objects.all()
     if request.method == 'POST':
@@ -151,8 +273,30 @@ def createRoom(request):
     context = {'form':form, 'topics':topics, 'create':True}
     return render(request, 'doors/room_form.html', context)
 
+
+
+
+
 @login_required(login_url="login")
 def updateRoom(request, pk):
+
+    '''
+     Handles the update of an existing room.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        pk (int): The primary key of the room to be updated.
+
+    Returns:
+        HttpResponseRedirect or HttpResponse: Redirects to 'home' after successful room update,
+        else renders the room update page with appropriate context.
+
+    Raises:
+        NotPermitted: If the user does not have authority to change the room.
+    
+    '''
+
+
     room = models.Room.objects.get(id=int(pk))
 
     if request.user != room.host:
@@ -169,8 +313,29 @@ def updateRoom(request, pk):
     context = {'form':form, 'room': room}
     return render(request, 'doors/room_form.html', context)
 
+
+
+
+
 @login_required(login_url="login")
 def deleteRoom(request,pk):
+
+    '''
+     Handles the deletion of an existing room.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        pk (int): The primary key of the room to be deleted.
+
+    Returns:
+        HttpResponseRedirect or HttpResponse: Redirects to 'home' after successful room deletion,
+        else renders the room deletion confirmation page with appropriate context.
+
+    Raises:
+        NotPermitted: If the user does not have authority to delete the room.
+    
+    '''
+
     room = models.Room.objects.get(id=int(pk))
     if request.user != room.host:
         return HttpResponse("You are not allowed here")
@@ -180,8 +345,29 @@ def deleteRoom(request,pk):
     context = {'obj': room}
     return render(request, 'doors/delete.html', context)
 
+
+
+
+
 @login_required(login_url="login")
 def deleteMessage(request,pk):
+
+    '''    
+    Handles the deletion of an existing message.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        pk (int): The primary key of the message to be deleted.
+
+    Returns:
+        HttpResponseRedirect or HttpResponse: Redirects to 'home' after successful message deletion,
+        else renders the message deletion confirmation page with appropriate context.
+
+    Raises:
+        NotPermitted: If the user does not have authority to delete the message.
+    
+    '''
+
     message = models.Message.objects.get(id=int(pk))
     if request.user != message.user:
         return HttpResponse("You are not allowed to delete this message")
@@ -192,6 +378,18 @@ def deleteMessage(request,pk):
     return render(request, 'doors/delete.html', context)
 
 def topicsPage(request):
+
+    '''
+    Displays a page with a list of topics.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: Renders the topics page with appropriate context.
+
+    '''
+
     q = request.GET.get('q')
     if (q):
         topics = models.Topic.objects.filter(
@@ -203,8 +401,22 @@ def topicsPage(request):
     context = {'topics':topics, 'total_room_count':total_room_count}
     return render(request, 'doors/topics.html', context)
 
+
+
+
 def activityPage(request):
 
+    '''
+     Displays a page with a list of all room messages.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: Renders the activity page with appropriate context.
+
+    '''
+    
     room_messages = models.Message.objects.all()
     context = {'room_messages':room_messages}
     return render(request, 'doors/activity.html', context)
