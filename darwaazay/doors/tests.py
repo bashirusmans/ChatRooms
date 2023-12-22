@@ -378,83 +378,243 @@ class TestUrls(SimpleTestCase):
     
     # Test that the login URL resolves to the loginPage view
     def test_login_url_resolves(self):
+        """
+        Test that the login URL resolves to the loginPage view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `loginPage`.
+            
+        """
         url = reverse('login')
         resolver = resolve(url)
         self.assertEquals(resolver.func, loginPage)
 
     # Test that the logout URL resolves to the logoutUser view
     def test_logout_url_resolves(self):
+        """
+        Test that the logout URL resolves to the logoutUser view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `logoutUser`.
+        """
+        
         url = reverse('logout')
         resolver = resolve(url)
         self.assertEquals(resolver.func, logoutUser)
 
     # Test that the register URL resolves to the registerUser view
     def test_register_url_resolves(self):
+        """
+        Test that the register URL resolves to the registerUser view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `registerUser`.
+        """
         url = reverse('register')
         resolver = resolve(url)
         self.assertEquals(resolver.func, registerUser)
 
     # Test that the update-user URL resolves to the updateUser view
     def test_update_user_url_resolves(self):
+        """
+        Test that the update-user URL resolves to the updateUser view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `updateUser`.
+        """
         url = reverse('update-user')
         resolver = resolve(url)
         self.assertEquals(resolver.func, updateUser)
 
     # Test that the home URL resolves to the home view
     def test_home_url_resolves(self):
+        """
+        Test that the home URL resolves to the home view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `home`.
+        """
         url = reverse('home')
         resolver = resolve(url)
         self.assertEquals(resolver.func, home)
 
     # Test that the room URL resolves to the room view
     def test_room_url_resolves(self):
+        """
+        Test that the room URL resolves to the room view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `room`.
+        """
         url = reverse('room', args=['some_pk'])
         resolver = resolve(url)
         self.assertEquals(resolver.func, room)
 
     # Test that the user-profile URL resolves to the userProfile view
     def test_user_profile_url_resolves(self):
+        """
+        Test that the user-profile URL resolves to the userProfile view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `userProfile`.
+        """
         url = reverse('user-profile', args=['some_pk'])
         resolver = resolve(url)
         self.assertEquals(resolver.func, userProfile)
 
     # Test that the create-room URL resolves to the createRoom view
-    def test_create_room_url_resolves(self):
+    def test_create_room_url_resolves():
+        """
+        Test that the create-room URL resolves to the createRoom view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `createRoom`.
+        """
         url = reverse('create-room')
         resolver = resolve(url)
-        self.assertEquals(resolver.func, createRoom)
+        assert resolver.func == createRoom
 
     # Test that the update-room URL resolves to the updateRoom view
-    def test_update_room_url_resolves(self):
+    def test_update_room_url_resolves():
+        """
+        Test that the update-room URL resolves to the updateRoom view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `updateRoom`.
+        """
         url = reverse('update-room', args=['some_pk'])
         resolver = resolve(url)
-        self.assertEquals(resolver.func, updateRoom)
+        assert resolver.func == updateRoom
+
 
     # Test that the delete-room URL resolves to the deleteRoom view
-    def test_delete_room_url_resolves(self):
+    def test_delete_room_url_resolves():
+        """
+        Test that the delete-room URL resolves to the deleteRoom view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `deleteRoom`.
+        """
         url = reverse('delete-room', args=['some_pk'])
-        resolver = resolve(url)   
-        self.assertEquals(resolver.func, deleteRoom)
+        resolver = resolve(url)
+        assert resolver.func == deleteRoom
+
 
     # Test that the delete-message URL resolves to the deleteMessage view
-    def test_delete_message_url_resolves(self):
+    def test_delete_message_url_resolves():
+        """
+        Test that the delete-message URL resolves to the deleteMessage view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `deleteMessage`.
+        """
         url = reverse('delete-message', args=['some_pk'])
         resolver = resolve(url)
-        self.assertEquals(resolver.func, deleteMessage)
+        assert resolver.func == deleteMessage
+
 
     # Test that the topics URL resolves to the topicsPage view
-    def test_topics_url_resolves(self):
+    def test_topics_url_resolves():
+        """
+        Test that the topics URL resolves to the topicsPage view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `topicsPage`.
+        """
         url = reverse('topics')
         resolver = resolve(url)
-        self.assertEquals(resolver.func, topicsPage)
+        assert resolver.func == topicsPage
+
 
     # Test that the activity URL resolves to the activityPage view
-    def test_activity_url_resolves(self):
+    def test_activity_url_resolves():
+        """
+        Test that the activity URL resolves to the activityPage view.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the resolved function is `activityPage`.
+        """
         url = reverse('activity')
         resolver = resolve(url)
-        self.assertEquals(resolver.func, activityPage)
-
-
+        assert resolver.func == activityPage
 
 
 # ---------------------------------------------- testing modals ---------------------------------
@@ -647,3 +807,7 @@ class TestForms(SimpleTestCase):
             # Retrieve the instance from the database and assert its values
             saved_user = User.objects.get(pk=user_instance.pk)
             self.assertEqual(saved_user.name, 'Test User')
+
+
+
+
