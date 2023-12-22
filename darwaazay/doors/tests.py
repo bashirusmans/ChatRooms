@@ -4,7 +4,15 @@ from django.urls import reverse
 
 # Create your tests here.
 """
-The testing strategy for the Django test cases given below is comprehensive and well-organized. It starts by testing fundamental user authentication views, covering login, logout, and registration, ensuring proper template rendering and request handling. The strategy then progresses to user profile-related views, including updates and profile viewing. Core functionalities like accessing the home page, creating and managing rooms, and handling messages are thoroughly tested. The approach includes testing room management features such as updating and deleting rooms. The final tests focus on broader application features like displaying topics and user activity. The strategy is enriched with clear print statements for progress visibility, and the inclusion of both positive and negative scenarios enhances test suite robustness. To further strengthen the strategy, consideration of edge cases, user permissions, error handling, and security aspects would be beneficial.
+The testing strategy for the Django test cases given below is comprehensive and well-organized. It starts by testing fundamental user 
+authentication views, covering login, logout, and registration, ensuring proper template rendering and request handling. 
+The strategy then progresses to user profile-related views, including updates and profile viewing. 
+Core functionalities like accessing the home page, creating and managing rooms, and handling messages are thoroughly tested. 
+The approach includes testing room management features such as updating and deleting rooms. 
+The final tests focus on broader application features like displaying topics and user activity.
+The strategy is enriched with clear print statements for progress visibility, 
+and the inclusion of both positive and negative scenarios enhances test suite robustness.
+To further strengthen the strategy, consideration of edge cases, user permissions, error handling, and security aspects would be beneficial.
 """
 
 
