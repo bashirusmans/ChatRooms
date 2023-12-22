@@ -693,7 +693,19 @@ class TestModels(TestCase):
 class TestForms(SimpleTestCase):
     class MyUserCreationFormTest(TestCase):
 
-        def test_valid_form(self):
+        def test_valid_form():
+            """
+            Test the validation of the MyUserCreationForm with valid data.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert that the form is valid.
+            """
             # Create a valid form with dummy data
             form_data = {
                 'name': 'Test User',
@@ -712,7 +724,19 @@ class TestForms(SimpleTestCase):
             self.assertTrue(form.is_valid())
 
 
-        def test_required_fields(self):
+        def test_required_fields():
+            """
+            Test that all required fields of MyUserCreationForm are present.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert that all required fields are present in the form's errors.
+            """
             # Test that all required fields are present
             form = MyUserCreationForm(data={})
             self.assertFalse(form.is_valid())
@@ -722,7 +746,20 @@ class TestForms(SimpleTestCase):
             self.assertIn('password1', form.errors)
             self.assertIn('password2', form.errors)
 
-        def test_password_mismatch(self):
+
+        def test_password_mismatch():
+            """
+            Test that the form detects password mismatch.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert that the form detects password mismatch.
+            """
             # Test that the form detects password mismatch
             form_data = {
                 'name': 'Test User',
@@ -735,7 +772,20 @@ class TestForms(SimpleTestCase):
             self.assertFalse(form.is_valid())
             self.assertIn('password2', form.errors)
 
-        def test_email_unique_constraint(self):
+
+        def test_email_unique_constraint():
+            """
+            Test that the form enforces the unique constraint on email.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert that the form enforces the unique constraint on email.
+            """
             # Test that the form enforces the unique constraint on email
             existing_user = get_user_model().objects.create_user(
                 name='Existing User',
@@ -753,53 +803,152 @@ class TestForms(SimpleTestCase):
             }
             form = MyUserCreationForm(data=form_data)
             self.assertFalse(form.is_valid())
-            self.assertIn('email', form.errors) 
-            
-    # >>>>>>>><<<<<<<<<<<<<<<<<<<<<<
+            self.assertIn('email', form.errors)
+
+            # >>>>>>>><<<<<<<<<<<<<<<<<<<<<<
     class RoomFormTest(TestCase):
         
         def setUp(self):
             self.user = User.objects.create_user(username='testuser', password='testpassword')
             self.topic = Topic.objects.create(name='Test Topic')
 
-        def test_create_room_with_valid_data(self):
+        def test_create_room_with_valid_data():
+            """
+            Test creating a room with valid data.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert the expected attributes of the created room.
+            """
+            # Create necessary objects (e.g., user, topic) if not already created
+            user = User.objects.create_user(username='testuser', password='testpassword')
+            topic = Topic.objects.create(name='Test Topic')
+
+            # Create a room with valid data
             room = Room.objects.create(
                 name='Test Room',
-                host=self.user,
-                topic=self.topic,
+                host=user,
+                topic=topic,
                 description='This is a test room description'
             )
-            self.assertEqual(room.name, 'Test Room')
-            self.assertEqual(room.host, self.user)
-            self.assertEqual(room.topic, self.topic)
-            self.assertEqual(room.description, 'This is a test room description')
+
+            # Assert the expected attributes of the created room
+            assert room.name == 'Test Room'
+            assert room.host == user
+            assert room.topic == topic
+            assert room.description == 'This is a test room description'
 
 
-        def test_remove_host_or_topic(self):
-            room = Room.objects.create(name='Test Room', host=self.user, topic=self.topic)
-            self.user.delete()
-            self.topic.delete()
+        def test_remove_host_or_topic():
+            """
+            Test removing the host or topic of a room.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert the removal of the host or topic from the room.
+            """
+            # Create necessary objects (e.g., user, topic) if not already created
+            user = User.objects.create_user(username='testuser', password='testpassword')
+            topic = Topic.objects.create(name='Test Topic')
+
+            # Create a room with a host and topic
+            room = Room.objects.create(name='Test Room', host=user, topic=topic)
+
+            # Delete the user and topic to simulate their removal
+            user.delete()
+            topic.delete()
+
+            # Refresh the room from the database to reflect changes
             room.refresh_from_db()
-            self.assertIsNone(room.host)
-            self.assertIsNone(room.topic)
 
-        def test_ordering(self):
-            room1 = Room.objects.create(name='Room 1', host=self.user, topic=self.topic)
-            room2 = Room.objects.create(name='Room 2', host=self.user, topic=self.topic)
-            room2.updated = room2.updated - timedelta(days=1)  # Modify update time
+            # Assert that the host and topic are now None in the room
+            assert room.host is None
+            assert room.topic is None
+
+        def test_ordering():
+            """
+            Test the ordering of rooms based on the 'updated' and 'created' fields.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert the correct ordering of rooms.
+            """
+            # Create necessary objects (e.g., user, topic) if not already created
+            user = User.objects.create_user(username='testuser', password='testpassword')
+            topic = Topic.objects.create(name='Test Topic')
+
+            # Create two rooms with the same host and topic
+            room1 = Room.objects.create(name='Room 1', host=user, topic=topic)
+            room2 = Room.objects.create(name='Room 2', host=user, topic=topic)
+
+            # Modify the 'updated' time of room2 to make it appear more recent
+            room2.updated = room2.updated - timedelta(days=1)
+
+            # Retrieve all rooms from the database
             rooms = Room.objects.all()
-            self.assertEqual(list(rooms), [room2, room1])  # Ordered by -updated, then -created
 
-        def test_str_method(self):
-            room = Room.objects.create(name='Test Room', host=self.user, topic=self.topic)
-            self.assertEqual(str(room), 'Test Room')
+            # Assert that the rooms are ordered by '-updated' and then '-created'
+            expected_order = [room2, room1]
+            self.assertEqual(list(rooms), expected_order)
+        def test_str_method():
+            """
+            Test the __str__ method of the Room model.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the test fails to assert the expected string representation of the room.
+            """
+            # Create necessary objects (e.g., user, topic) if not already created
+            user = User.objects.create_user(username='testuser', password='testpassword')
+            topic = Topic.objects.create(name='Test Topic')
+
+            # Create a room with a specific name, host, and topic
+            room = Room.objects.create(name='Test Room', host=user, topic=topic)
+
+            # Assert that the string representation of the room matches the expected value
+            expected_str = 'Test Room'
+            self.assertEqual(str(room), expected_str)
+
 
         def test_form_clean_data(self):
             # Test any custom cleaning logic in the form's clean() method
             pass  # Implement specific tests for cleaning logic
     class UserFormTest(TestCase):
 
-        def test_valid_form(self):
+        def test_valid_form():
+            """
+            Test the validity of a UserForm with valid data.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the form is not valid.
+            """
+            # Create valid form data
             form_data = {
                 'avatar': 'test_avatar.png',
                 'name': 'Test User',
@@ -807,15 +956,49 @@ class TestForms(SimpleTestCase):
                 'email': 'test@example.com',
                 'bio': 'This is a test bio',
             }
+
+            # Create a UserForm instance with the valid data
             form = UserForm(data=form_data)
+
+            # Assert that the form is valid
             self.assertTrue(form.is_valid())
 
-        def test_blank_data(self):
-            form = UserForm(data={})
-            self.assertFalse(form.is_valid())
-            self.assertEqual(len(form.errors), 4)  # Assuming there are 4 required fields in the form
+        def test_blank_data():
+            """
+            Test the behavior of a UserForm with blank data.
 
-        def test_invalid_email(self):
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the form is considered valid or the number of form errors is not as expected.
+            """
+            # Create a UserForm instance with blank data
+            form = UserForm(data={})
+
+            # Assert that the form is not valid
+            self.assertFalse(form.is_valid())
+
+            # Assert that the number of form errors is as expected (assuming 4 required fields)
+            self.assertEqual(len(form.errors), 4)
+
+        def test_invalid_email():
+            """
+            Test the behavior of a UserForm with an invalid email.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the form is considered valid or if the 'email' field is not present in form errors.
+            """
+            # Create a UserForm instance with invalid email data
             form_data = {
                 'avatar': 'test_avatar.png',
                 'name': 'Test User',
@@ -824,10 +1007,29 @@ class TestForms(SimpleTestCase):
                 'bio': 'This is a test bio',
             }
             form = UserForm(data=form_data)
+
+            # Assert that the form is not valid
             self.assertFalse(form.is_valid())
+
+            # Assert that the 'email' field is present in form errors
             self.assertIn('email', form.errors)
 
-        def test_form_save(self):
+
+        def test_form_save():
+            """
+            Test the save method of a UserForm.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+
+            Raises:
+                AssertionError: If the form is not valid, if the saved user instance's attributes do not match the expected values,
+                                or if the retrieved user instance from the database does not match the saved user instance.
+            """
+            # Create a UserForm instance with valid data
             form_data = {
                 'avatar': 'test_avatar.png',
                 'name': 'Test User',
@@ -836,10 +1038,14 @@ class TestForms(SimpleTestCase):
                 'bio': 'This is a test bio',
             }
             form = UserForm(data=form_data)
+
+            # Assert that the form is valid
             self.assertTrue(form.is_valid())
 
             # Assuming you have overridden the save method in your User model
             user_instance = form.save(commit=False)
+
+            # Assert that the attributes of the saved user instance match the expected values
             self.assertEqual(user_instance.name, 'Test User')
             self.assertEqual(user_instance.username, 'test_username')
             self.assertEqual(user_instance.email, 'test@example.com')
@@ -852,7 +1058,5 @@ class TestForms(SimpleTestCase):
             # Retrieve the instance from the database and assert its values
             saved_user = User.objects.get(pk=user_instance.pk)
             self.assertEqual(saved_user.name, 'Test User')
-
-
-
+            # Add more assertions based on your model fields
 
