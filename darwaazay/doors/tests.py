@@ -625,21 +625,66 @@ class TestModels(TestCase):
             self.user = User.objects.create_user(username='testuser', password='testpassword')
             self.room = Room.objects.create(name='Test Room', host=self.user)
 
-        def test_create_message_with_valid_data(self):
-            message = Message.objects.create(
-                user=self.user,
-                room=self.room,
-                body='This is a test message'
-            )
-            self.assertEqual(message.user, self.user)
-            self.assertEqual(message.room, self.room)
-            self.assertEqual(message.body, 'This is a test message')
+    def test_create_message_with_valid_data():
+        """
+        Test creating a message with valid data.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the created message attributes match the expected values.
+        """
+        # Set up the necessary data
+        user = User.objects.create_user(username='testuser', password='testpassword')
+        room = Room.objects.create(name='Test Room', host=user)
+
+        # Create a message with valid data
+        message = Message.objects.create(
+            user=user,
+            room=room,
+            body='This is a test message'
+        )
+
+        # Assert that the message attributes match the expected values
+        assert message.user == user
+        assert message.room == room
+        assert message.body == 'This is a test message'
+
 
                 
 
-        def test_str_method(self):
-            message = Message.objects.create(user=self.user, room=self.room, body='Fever signals immune response; often caused by infections or underlying conditions.')
-            self.assertEqual(str(message), 'Fever signals immune response; often caused by inf')  # Truncated to 50 characters
+    def test_str_method():
+        """
+        Test the __str__ method of the Message model.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If the test fails to assert that the truncated string representation matches the expected value.
+        """
+        # Set up the necessary data
+        user = User.objects.create_user(username='testuser', password='testpassword')
+        room = Room.objects.create(name='Test Room', host=user)
+
+        # Create a message with a specific body
+        message = Message.objects.create(
+            user=user,
+            room=room,
+            body='Fever signals immune response; often caused by infections or underlying conditions.'
+        )
+
+        # Assert that the truncated string representation matches the expected value
+        expected_str = 'Fever signals immune response; often caused by inf'
+        assert str(message) == expected_str
+
             
          
         
