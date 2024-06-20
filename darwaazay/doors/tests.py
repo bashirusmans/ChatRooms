@@ -106,9 +106,9 @@ class TestViews(TestCase):
         response = client.post(
             self.register_page_url,
             {
-                "name": "ahmed",
-                "username": "ahmed",
-                "email": "ahmed@gmail.com",
+                "name": "umar",
+                "username": "umar",
+                "email": "umar@gmail.com",
                 "password1": "Yoman123",
                 "password2": "Yoman123",
             },
@@ -505,7 +505,7 @@ class TestUrls(SimpleTestCase):
         self.assertEquals(resolver.func, userProfile)
 
     # Test that the create-room URL resolves to the createRoom view
-    def test_create_room_url_resolves():
+    def test_create_room_url_resolves(self):
         """
         Test that the create-room URL resolves to the createRoom view.
 
@@ -523,7 +523,7 @@ class TestUrls(SimpleTestCase):
         assert resolver.func == createRoom
 
     # Test that the update-room URL resolves to the updateRoom view
-    def test_update_room_url_resolves():
+    def test_update_room_url_resolves(self):
         """
         Test that the update-room URL resolves to the updateRoom view.
 
@@ -542,7 +542,7 @@ class TestUrls(SimpleTestCase):
 
 
     # Test that the delete-room URL resolves to the deleteRoom view
-    def test_delete_room_url_resolves():
+    def test_delete_room_url_resolves(self):
         """
         Test that the delete-room URL resolves to the deleteRoom view.
 
@@ -561,7 +561,7 @@ class TestUrls(SimpleTestCase):
 
 
     # Test that the delete-message URL resolves to the deleteMessage view
-    def test_delete_message_url_resolves():
+    def test_delete_message_url_resolves(self):
         """
         Test that the delete-message URL resolves to the deleteMessage view.
 
@@ -580,7 +580,7 @@ class TestUrls(SimpleTestCase):
 
 
     # Test that the topics URL resolves to the topicsPage view
-    def test_topics_url_resolves():
+    def test_topics_url_resolves(self):
         """
         Test that the topics URL resolves to the topicsPage view.
 
@@ -599,7 +599,7 @@ class TestUrls(SimpleTestCase):
 
 
     # Test that the activity URL resolves to the activityPage view
-    def test_activity_url_resolves():
+    def test_activity_url_resolves(self):
         """
         Test that the activity URL resolves to the activityPage view.
 
@@ -625,7 +625,7 @@ class TestModels(TestCase):
             self.user = User.objects.create_user(username='testuser', password='testpassword')
             self.room = Room.objects.create(name='Test Room', host=self.user)
 
-    def test_create_message_with_valid_data():
+    def test_create_message_with_valid_data(self):
         """
         Test creating a message with valid data.
 
@@ -657,7 +657,7 @@ class TestModels(TestCase):
 
                 
 
-    def test_str_method():
+    def test_str_method(self):
         """
         Test the __str__ method of the Message model.
 
@@ -693,7 +693,7 @@ class TestModels(TestCase):
 class TestForms(SimpleTestCase):
     class MyUserCreationFormTest(TestCase):
 
-        def test_valid_form():
+        def test_valid_form(self):
             """
             Test the validation of the MyUserCreationForm with valid data.
 
@@ -724,7 +724,7 @@ class TestForms(SimpleTestCase):
             self.assertTrue(form.is_valid())
 
 
-        def test_required_fields():
+        def test_required_fields(self):
             """
             Test that all required fields of MyUserCreationForm are present.
 
@@ -747,7 +747,7 @@ class TestForms(SimpleTestCase):
             self.assertIn('password2', form.errors)
 
 
-        def test_password_mismatch():
+        def test_password_mismatch(self):
             """
             Test that the form detects password mismatch.
 
@@ -773,7 +773,7 @@ class TestForms(SimpleTestCase):
             self.assertIn('password2', form.errors)
 
 
-        def test_email_unique_constraint():
+        def test_email_unique_constraint(self):
             """
             Test that the form enforces the unique constraint on email.
 
@@ -812,7 +812,7 @@ class TestForms(SimpleTestCase):
             self.user = User.objects.create_user(username='testuser', password='testpassword')
             self.topic = Topic.objects.create(name='Test Topic')
 
-        def test_create_room_with_valid_data():
+        def test_create_room_with_valid_data(self):
             """
             Test creating a room with valid data.
 
@@ -844,7 +844,7 @@ class TestForms(SimpleTestCase):
             assert room.description == 'This is a test room description'
 
 
-        def test_remove_host_or_topic():
+        def test_remove_host_or_topic(self):
             """
             Test removing the host or topic of a room.
 
@@ -875,7 +875,7 @@ class TestForms(SimpleTestCase):
             assert room.host is None
             assert room.topic is None
 
-        def test_ordering():
+        def test_ordering(self):
             """
             Test the ordering of rooms based on the 'updated' and 'created' fields.
 
@@ -905,7 +905,7 @@ class TestForms(SimpleTestCase):
             # Assert that the rooms are ordered by '-updated' and then '-created'
             expected_order = [room2, room1]
             self.assertEqual(list(rooms), expected_order)
-        def test_str_method():
+        def test_str_method(self):
             """
             Test the __str__ method of the Room model.
 
@@ -935,7 +935,7 @@ class TestForms(SimpleTestCase):
             pass  # Implement specific tests for cleaning logic
     class UserFormTest(TestCase):
 
-        def test_valid_form():
+        def test_valid_form(self):
             """
             Test the validity of a UserForm with valid data.
 
@@ -963,7 +963,7 @@ class TestForms(SimpleTestCase):
             # Assert that the form is valid
             self.assertTrue(form.is_valid())
 
-        def test_blank_data():
+        def test_blank_data(self):
             """
             Test the behavior of a UserForm with blank data.
 
@@ -985,7 +985,7 @@ class TestForms(SimpleTestCase):
             # Assert that the number of form errors is as expected (assuming 4 required fields)
             self.assertEqual(len(form.errors), 4)
 
-        def test_invalid_email():
+        def test_invalid_email(self):
             """
             Test the behavior of a UserForm with an invalid email.
 
@@ -1015,7 +1015,7 @@ class TestForms(SimpleTestCase):
             self.assertIn('email', form.errors)
 
 
-        def test_form_save():
+        def test_form_save(self):
             """
             Test the save method of a UserForm.
 
